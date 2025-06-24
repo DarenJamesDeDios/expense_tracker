@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkcalendar import DateEntry
 from expense import Expense
 from expense_manager import ExpenseManager
+from themes import ThemeManager
 
 class ExpenseApp:
     def __init__(self, root):
@@ -11,6 +12,9 @@ class ExpenseApp:
         self.sort_order = {'date': False, 'category': False, 'amount': False}
         self.setup_ui()
         self.refresh()
+        self.theme = ThemeManager()
+        self.theme.apply_light_theme()  
+        self.current_theme = "light"
 
     def setup_ui(self):
         self.root.title("Expense Tracker")

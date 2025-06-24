@@ -13,11 +13,10 @@ class ExpenseApp:
         self.setup_ui()
         self.refresh()
         self.theme = ThemeManager()
-        self.theme.apply_light_theme()  
+        self.theme.apply_light_theme()
         self.current_theme = "light"
 
     def setup_ui(self):
-
         self.toggle_theme_button = tk.Button(self.root, text="Toggle Theme", command=self.toggle_theme)
         self.toggle_theme_button.grid(row=0, column=9)
 
@@ -57,8 +56,8 @@ class ExpenseApp:
 
         columns = ("date", "category", "amount")
         self.tree = ttk.Treeview(self.root, columns=columns, show="headings", height=10)
-        for col in columns:
-            self.tree.heading(col, text=col.title(), command=lambda c=col: self.sort_by(c))
+        for column in columns:
+            self.tree.heading(column, text=column.title(), command=lambda col=column: self.sort_by(col))
         self.tree.grid(row=2, column=0, columnspan=9)
 
         scrollbar = ttk.Scrollbar(self.root, orient="vertical", command=self.tree.yview)
@@ -85,8 +84,8 @@ class ExpenseApp:
         amount = self.amount_entry.get()
         if date and category and amount:
             try:
-                expense = Expense(date, category, float(amount))
-                self.manager.add_expense(expense)
+                new_expense = Expense(date, category, float(amount))
+                self.manager.add_expense(new_expense)
                 self.status_label.config(text="Expense added.", fg="green")
                 self.refresh()
             except ValueError:
@@ -95,19 +94,19 @@ class ExpenseApp:
             self.status_label.config(text="Fill all fields.", fg="red")
 
     def delete_expense(self):
-        selected = self.tree.selection()
-        if selected:
-            values = self.tree.item(selected[0])['values']
-            expense = Expense(*values)
-            self.manager.delete_expense(expense)
+        selected_items = self.tree.selection()
+        if selected_items:
+            selected_values = self.tree.item(selected_items[0])['values']
+            expense_to_delete = Expense(*selected_values)
+            self.manager.delete_expense(expense_to_delete)
             self.status_label.config(text="Deleted.", fg="green")
             self.refresh()
 
     def edit_expense(self):
-        selected = self.tree.selection()
-        if selected:
-            values = self.tree.item(selected[0])['values']
-            self.old_expense = Expense(*values)
+        selected_items = self.tree.selection()
+        if selected_items:
+            selected_values = self.tree.item(selected_items[0])['values']
+            self.old_expense = Expense(*selected_values)
             self.date_entry.set_date(self.old_expense.date)
             self.category_combobox.set(self.old_expense.category)
             self.amount_entry.delete(0, tk.END)
@@ -115,8 +114,8 @@ class ExpenseApp:
             self.add_button.config(text="Update", command=self.update_expense)
 
     def update_expense(self):
-        new = Expense(self.date_entry.get(), self.category_combobox.get(), self.amount_entry.get())
-        self.manager.update_expense(self.old_expense, new)
+        updated_expense = Expense(self.date_entry.get(), self.category_combobox.get(), self.amount_entry.get())
+        self.manager.update_expense(self.old_expense, updated_expense)
         self.add_button.config(text="Add Expense", command=self.add_expense)
         self.status_label.config(text="Updated.", fg="green")
         self.refresh()
@@ -124,20 +123,27 @@ class ExpenseApp:
     def refresh(self):
         self.manager.load_expenses()
         self.tree.delete(*self.tree.get_children())
-        for e in self.manager.expenses:
-            self.tree.insert("", tk.END, values=(e.date, e.category, f"{e.amount:.2f}"))
+        for expense in self.manager.expenses:
+            self.tree.insert("", tk.END, values=(expense.date, expense.category, f"{expense.amount:.2f}"))
         self.total_label.config(text=f"Total Expenses: ${self.manager.get_total():.2f}")
         self.update_summary()
 
     def update_summary(self):
         self.summary_text.config(state=tk.NORMAL)
         self.summary_text.delete(1.0, tk.END)
-        for cat, data in self.manager.get_summary().items():
-            self.summary_text.insert(tk.END, f"{cat}:\n  Total = ${data['total']:.2f}\n  Avg = ${data['average']:.2f}\n\n")
+        for category, summary_data in self.manager.get_summary().items():
+            self.summary_text.insert(
+                tk.END,
+                f"{category}:\n  Total = ${summary_data['total']:.2f}\n  Avg = ${summary_data['average']:.2f}\n\n"
+            )
         self.summary_text.config(state=tk.DISABLED)
 
-    def sort_by(self, col):
-        reverse = not self.sort_order[col]
-        self.manager.expenses.sort(key=lambda x: getattr(x, col) if col != 'amount' else float(x.amount), reverse=reverse)
-        self.sort_order[col] = reverse
+    def sort_by(self, column_name):
+        reverse_sort = not self.sort_order[column_name]
+        self.manager.expenses.sort(
+            key=lambda expense: getattr(expense, column_name) if column_name != 'amount' else float(expense.amount),
+            reverse=reverse_sort
+        )
+        self.sort_order[column_name] = reverse_sort
         self.refresh()
+

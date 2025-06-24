@@ -27,8 +27,8 @@ class ExpenseManager:
     def save_expenses(self):
         with open(self.filename, "w", newline="") as file:
             writer = csv.writer(file)
-            for e in self.expenses:
-                writer.writerow([e.date, e.category, f"{e.amount:.2f}"])
+            for expense in self.expenses:
+                writer.writerow([expense.date, expense.category, f"{expense.amount:.2f}"])
 
     def add_expense(self, expense):
         self.expenses.append(expense)
@@ -36,25 +36,30 @@ class ExpenseManager:
         self.category_counts[expense.category] += 1
         self.save_expenses()
 
-    def delete_expense(self, target):
-        self.expenses = [e for e in self.expenses if not (
-            e.date == target.date and e.category == target.category and e.amount == target.amount)]
+    def delete_expense(self, target_expense):
+        self.expenses = [
+            expense for expense in self.expenses
+            if not (
+                expense.date == target_expense.date and
+                expense.category == target_expense.category and
+                expense.amount == target_expense.amount
+            )
+        ]
         self.save_expenses()
         self.load_expenses()
 
-    def update_expense(self, old, new):
-        self.delete_expense(old)
-        self.add_expense(new)
+    def update_expense(self, old_expense, new_expense):
+        self.delete_expense(old_expense)
+        self.add_expense(new_expense)
 
     def get_total(self):
-        return sum(e.amount for e in self.expenses)
+        return sum(expense.amount for expense in self.expenses)
 
     def get_summary(self):
         return {
-            cat: {
-                'total': total,
-                'average': total / self.category_counts[cat] if self.category_counts[cat] > 0 else 0
+            category: {
+                'total': total_amount,
+                'average': total_amount / self.category_counts[category] if self.category_counts[category] > 0 else 0
             }
-            for cat, total in self.category_totals.items()
+            for category, total_amount in self.category_totals.items()
         }
-    

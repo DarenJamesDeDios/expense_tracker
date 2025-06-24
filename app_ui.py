@@ -17,6 +17,10 @@ class ExpenseApp:
         self.current_theme = "light"
 
     def setup_ui(self):
+
+        self.toggle_theme_button = tk.Button(self.root, text="Toggle Theme", command=self.toggle_theme)
+        self.toggle_theme_button.grid(row=0, column=9)
+
         self.root.title("Expense Tracker")
         self.root.resizable(False, False)
 
@@ -66,6 +70,14 @@ class ExpenseApp:
 
         self.summary_text = tk.Text(self.root, height=10, width=30, state=tk.DISABLED)
         self.summary_text.grid(row=4, column=0, columnspan=9)
+
+    def toggle_theme(self):
+        if self.current_theme == "light":
+            self.theme.apply_dark_theme()
+            self.current_theme = "dark"
+        else:
+            self.theme.apply_light_theme()
+            self.current_theme = "light"
 
     def add_expense(self):
         date = self.date_entry.get()

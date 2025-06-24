@@ -1,4 +1,4 @@
-from base_theme import BaseTheme
+from .base_theme import BaseTheme
 
 class LightTheme(BaseTheme):
     def apply(self, root):

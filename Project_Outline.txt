@@ -1,0 +1,19 @@
+An expense tracker is a tool or application used to record and monitor daily spending. 
+It helps users manage their finances by categorizing expenses, setting budgets, and analyzing spending habits over time. 
+Although manual tracking of the expenses could a hassle and a bit problematic if the item was lost. This is why I want to develop
+a python based made expense track to track it digitally.
+
+With that said, this outline will help me build the expense tracker in mind:
+
+1. Have the user to input their expenses
+
+2. Track date, category, amount, and description of expenses.
+
+3. View all expenses.
+
+4. Filter expenses by date/category.
+
+5. Calculate total spent in a given period/category.
+
+6. Save and load data (e.g., CSV or JSON format).
+

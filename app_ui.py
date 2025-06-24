@@ -3,11 +3,7 @@ from tkinter import ttk
 from tkcalendar import DateEntry
 from expense import Expense
 from expense_manager import ExpenseManager
-from themes.light_theme import LightTheme
-from themes.dark_theme import DarkTheme
-from themes.orange_theme import OrangeTheme
-from themes.pastel_theme import PastelTheme
-
+from themes import LightTheme, DarkTheme, PastelTheme, BlueTheme, OrangeTheme
 
 
 class ExpenseApp:
@@ -21,7 +17,8 @@ class ExpenseApp:
             "Light": LightTheme(),
             "Dark": DarkTheme(),
             "Orange": OrangeTheme(),
-            "Pastel": PastelTheme()
+            "Pastel": PastelTheme(),
+            "Blue": BlueTheme()
         }
         self.current_theme_name = "Light"
         self.theme = self.themes[self.current_theme_name]

@@ -1,4 +1,4 @@
-💸 Expense Tracker
+## 💸 Expense Tracker
 
 A simple and user-friendly **desktop application** for managing personal expenses. This Python-based expense tracker allows users to log, edit, delete, and analyze their spending habits using a graphical interface.
 

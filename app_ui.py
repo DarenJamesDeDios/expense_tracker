@@ -3,7 +3,12 @@ from tkinter import ttk
 from tkcalendar import DateEntry
 from expense import Expense
 from expense_manager import ExpenseManager
-from themes import ThemeManager
+from themes.light_theme import LightTheme
+from themes.dark_theme import DarkTheme
+from themes.orange_theme import OrangeTheme
+from themes.pastel_theme import PastelTheme
+
+
 
 class ExpenseApp:
     def __init__(self, root):
@@ -12,9 +17,15 @@ class ExpenseApp:
         self.sort_order = {'date': False, 'category': False, 'amount': False}
         self.setup_ui()
         self.refresh()
-        self.theme = ThemeManager()
-        self.theme.apply_light_theme()
-        self.current_theme = "light"
+        self.themes = {
+            "Light": LightTheme(),
+            "Dark": DarkTheme(),
+            "Orange": OrangeTheme(),
+            "Pastel": PastelTheme()
+        }
+        self.current_theme_name = "Light"
+        self.theme = self.themes[self.current_theme_name]
+        self.theme.apply(self.root)
 
     def setup_ui(self):
         self.toggle_theme_button = tk.Button(self.root, text="Toggle Theme", command=self.toggle_theme)
@@ -71,12 +82,12 @@ class ExpenseApp:
         self.summary_text.grid(row=4, column=0, columnspan=9)
 
     def toggle_theme(self):
-        if self.current_theme == "light":
-            self.theme.apply_dark_theme()
-            self.current_theme = "dark"
-        else:
-            self.theme.apply_light_theme()
-            self.current_theme = "light"
+        theme_names = list(self.themes.keys())
+        current_index = theme_names.index(self.current_theme_name)
+        next_index = (current_index + 1) % len(theme_names)
+        self.current_theme_name = theme_names[next_index]
+        self.theme = self.themes[self.current_theme_name]
+        self.theme.apply(self.root)
 
     def add_expense(self):
         date = self.date_entry.get()
